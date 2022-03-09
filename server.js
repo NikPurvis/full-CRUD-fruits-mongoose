@@ -59,6 +59,22 @@ app.get("/fruits/seed", (req, res) => {
 })
 
 
+// INDEX route
+app.get("/fruits", (req, res) => {
+    // Find the fruits
+    Fruit.find({})
+    // Render the template AFTER they're found
+        .then(fruits => {
+            console.log("Fruits:", fruits)
+            res.render("fruits/index.liquid", { fruits })
+        })
+    // Show an error if there is one
+    .catch(error => {
+        console.log(error)
+        res.json({ error })
+    })
+})
+
 ////////////////////////////////////////
 // Server Listener
 ///////////////////////////////////////
