@@ -35,6 +35,29 @@ app.get("/", (req, res) => {
     res.send("Your server is running, better go catch it")
 })
 
+app.get("/fruits/seed", (req, res) => {
+// array of starter fruits
+    const startFruits = [
+        { name: "Orange", color: "orange", readyToEat: false },
+        { name: "Grape", color: "purple", readyToEat: false },
+        { name: "Banana", color: "orange", readyToEat: false },
+        { name: "Strawberry", color: "red", readyToEat: false },
+        { name: "Coconut", color: "brown", readyToEat: false }
+    ]
+    // When we seed data, there are a few steps involved.
+    // 1. Delete all the data that already exists (will only happen if data exists)
+    Fruit.remove({})
+        .then (data => {
+            console.log("This is what remove returns", data)
+            // 2. Create with our seed data
+            Fruit.create(startFruits)
+                .then(data => {
+                    res.send(data)
+                })
+        })
+    // 3. Send, if we want to seed that data.
+})
+
 
 ////////////////////////////////////////
 // Server Listener
