@@ -6,7 +6,7 @@ require("dotenv").config()
 const express = require("express")
 const morgan = require("morgan")
 const methodOverride = require("method-override")
-// We'll also import our fruits model when we have it.
+const Fruit = require("./models/fruit")
 
 
 ////////////////////////////////////////
@@ -31,6 +31,7 @@ app.use(express.static("public"))
 // Routes
 ///////////////////////////////////////
 app.get("/", (req, res) => {
+    console.log("The Fruit model:", Fruit)
     res.send("Your server is running, better go catch it")
 })
 
