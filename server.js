@@ -75,6 +75,32 @@ app.get("/fruits", (req, res) => {
     })
 })
 
+
+// NEW route -> GET route that renders the page with the form
+app.get("/fruits/new", (req, res) => {
+    res.render("fruits/new")
+})
+
+// CREATE route -> POST route that actually calls the db and makes a new document
+
+
+// SHOW route
+app.get("/fruits/:id", (req, res) => {
+    // 1. Get the ID
+    const fruitId = req.params.id
+    // 2. Find a fruit by its ID
+    Fruit.findById(fruitId)
+    // 3. Render a view with the data
+        .then(fruit => {
+            res.render("fruits/show", { fruit })
+        })
+    // If there's an error, show that instead.
+        .catch(err => {
+            console.log(err)
+            res.json({ err })
+        })
+})
+
 ////////////////////////////////////////
 // Server Listener
 ///////////////////////////////////////
