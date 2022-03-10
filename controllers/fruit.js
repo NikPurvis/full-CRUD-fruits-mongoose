@@ -11,6 +11,23 @@ const Fruit = require("../models/fruit")
 ///////////////////////////////////////
 const router = express.Router()
 
+
+///////////////////////////////////////
+// Router Middleware
+///////////////////////////////////////
+// Create some Middleware to protect these routes
+// Authorization Middleware
+router.use((req, res, next) => {
+    // Checking the loggedin boolean of our session
+    if (req.session.loggedIn) {
+        // If they're logged in, go to the next thing (that's the controller)
+        next()
+    } else {
+        // If they're not logged in, send them to the login page
+        res.redirect("user/login")
+    }
+})
+
 ///////////////////////////////////////
 // Routes
 ///////////////////////////////////////
@@ -32,6 +49,23 @@ router.get("/", (req, res) => {
 })
 
 
+// INDEX route that shows only the user's fruits
+router.get("/mine", (req, res) => {
+    // Find the fruits
+    Fruit.find({ username: req.session.username})
+    // Render the template AFTER they're found
+        .then(fruits => {
+            // console.log("Fruits:", fruits)
+            res.render("fruits/index", { fruits })
+        })
+    // Show an error if there is one
+    .catch(error => {
+        console.log(error)
+        res.json({ error })
+    })
+})
+
+
 // NEW route -> GET route that renders the page with the form
 router.get("/new", (req, res) => {
     res.render("fruits/new")
@@ -44,7 +78,9 @@ router.post("/", (req, res) => {
     // The first part (before =) sets the property name
     // The second part (after =) is a ternary to set the value
     req.body.readyToEat = req.body.readyToEat === "on" ? true: false
-    console.log("This is the fruit to create:", req.body)
+    // console.log("This is the fruit to create:", req.body)
+    // Now that we have user speicfic fruits, we'll add the username to the fruit created
+    req.body.username = req.session.username
     Fruit.create(req.body)
         .then(data => {
             // console.log("This was returned from create:", data)

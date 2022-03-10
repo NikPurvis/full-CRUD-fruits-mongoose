@@ -45,17 +45,52 @@ router.post("/signup", async (req, res) => {
 // Two login routes:
 // 1. GET to render the login form
 router.get("/login", (req, res) => {
-    res.send("login page")
+    res.render("users/login")
 })
 
 // 2. POST to send the login info (and create a session)
-router.post("/login", (req, res) => {
-    res.send("login -> post")
+router.post("/login", async (req, res) => {
+    // 1. Get the data from the request body
+    const { username, password } = req.body
+    // 2. Search for the user
+    User.findOne({ username })
+        .then(async (user) => {
+            // 3. Check if the user exists
+            if (user) {
+                // 4. Compare the password
+                // bcrypt.compare evalues to a truthy or falsy value
+                const result = await bcrypt.compare(password, user.password)
+                
+                if (result) {
+                    // 5. Use the session object
+                    // 6. Store some properties in the session
+                    req.session.username = username
+                    req.session.loggedIn = true
+                    // 7. Redirect to /fruits if login is successful
+                    res.redirect("/fruits")
+                } else {
+                    // 8. Send a error if the password doesn't match
+                    res.json({ error: "Username or Password incorrect" })
+                }
+            } else {
+                // 9. Send a different error if the user doesn't exist
+                res.json({ error: "User does not exist" })
+            }
+        })
+        // 10. Catch any other errors that occur        
+        .catch(error => {
+            console.log(error)
+            res.json(error)
+        })
 })
 
 // Signout route -> destroy the session
 router.get("/logout", (req, res) => {
-    res.send("logout page")
+   // Destroy the session and redirect to the main page
+    req.session.destroy(error => {
+        console.log(error)
+        res.send("your session has been destroyed")
+    })
 })
 
 
