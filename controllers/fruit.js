@@ -24,7 +24,7 @@ router.use((req, res, next) => {
         next()
     } else {
         // If they're not logged in, send them to the login page
-        res.redirect("user/login")
+        res.redirect("/user/login")
     }
 })
 
