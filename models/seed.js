@@ -24,7 +24,7 @@ db.on('open', () => {
 	// delete all the data that already exists(will only happen if data exists)
 	Fruit.remove({})
         .then(deletedFruits => {
-            console.log('this is what remove returns', deletedFruits)
+		    console.log('this is what remove returns', deletedFruits)
 		    // then we create with our seed data
             Fruit.create(startFruits)
                 .then((data) => {
@@ -35,7 +35,7 @@ db.on('open', () => {
                     console.log(error)
                     db.close()
                 })
-        })
+	    })
         .catch(error => {
             console.log(error)
             db.close()
